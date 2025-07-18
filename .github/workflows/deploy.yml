@@ -1,0 +1,43 @@
+name: Deploy Hello Status API
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - 'release/*'
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run a simple test
+      run: |
+        node -e "console.log('Test Passed')"
+
+    - name: Deploy based on branch
+      run: |
+        if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+          echo "Deploying to Production"
+          # Add your production deploy commands here
+        elif [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
+          echo "Deploying to Development"
+          # Add your dev deploy commands here
+        elif [[ "${{ github.ref }}" == refs/heads/release/* ]]; then
+          echo "Deploying to Staging"
+          # Add your staging deploy commands here
+        else
+          echo "No deployment for this branch"
+        fi
